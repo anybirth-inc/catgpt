@@ -2,11 +2,25 @@ import { Record } from '../types';
 
 export function sortRecordsByDate(records: Record[]): Record[] {
   return [...records].sort((a, b) => {
-    const dateComparison = new Date(b.date).getTime() - new Date(a.date).getTime();
-    if (dateComparison !== 0) return dateComparison;
+    // まずcreated_atで比較
+    if (a.created_at && b.created_at) {
+      const createdAtA = new Date(a.created_at).getTime();
+      const createdAtB = new Date(b.created_at).getTime();
+      if (createdAtA !== createdAtB) return createdAtB - createdAtA;
+    }
+
+    // created_atが同じ場合は日付で比較
+    const dateA = new Date(a.date + 'T00:00:00Z').getTime();
+    const dateB = new Date(b.date + 'T00:00:00Z').getTime();
+    if (dateA !== dateB) return dateB - dateA;
     
-    // 同じ日付の場合はIDで比較（新しいものが先）
-    return (b.id || '').localeCompare(a.id || '');
+    // 両方同じ場合はIDで比較
+    // IDは必ず存在することを保証
+    if (a.id && b.id) {
+      return b.id.localeCompare(a.id);
+    }
+    
+    return 0;
   });
 }
 
@@ -20,7 +34,7 @@ export function getLatestRecordByType(records: Record[], type: Record['type']): 
 }
 
 export function validateRecord(record: Partial<Record>): boolean {
-  if (!record.catId || !record.type || !record.date || record.value === undefined) {
+  if (!record.cat_id || !record.type || !record.date || record.value === undefined) {
     return false;
   }
 
