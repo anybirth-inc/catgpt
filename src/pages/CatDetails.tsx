@@ -10,6 +10,7 @@ import { RecordModal } from '../components/modals/RecordModal';
 import { RecordType } from '../types';
 import { useCatDetails } from '../hooks/useCatDetails';
 import { useSupabase } from '../context/SupabaseContext';
+import { DiaryModal } from '../components/modals/DiaryModal';
 
 export function CatDetails() {
   const { id } = useParams<{ id: string }>();
@@ -24,6 +25,11 @@ export function CatDetails() {
     isOpen: false,
     type: 'weight',
     title: ''
+  });
+  const [diaryModal, setDiaryModal] = useState<{
+    isOpen: boolean;
+  }>({
+    isOpen: false
   });
 
   const openRecordModal = (type: RecordType, title: string) => {
@@ -75,9 +81,11 @@ export function CatDetails() {
   return (
     <div className="pb-20">
       <CatHeader cat={cat} />
-      <CatQuickActions catId={id!} onRecordClick={openRecordModal} />
       <HealthRecordSection catId={id!} onRecordClick={openRecordModal} />
-      <DiarySection />
+      <DiarySection 
+        catId={cat.id}
+        onAddClick={() => setDiaryModal({ isOpen: true })}
+      />
       <VetSection />
       <MedicationSection />
 
@@ -87,6 +95,12 @@ export function CatDetails() {
         type={recordModal.type}
         title={recordModal.title}
         catId={id!}
+      />
+
+      <DiaryModal
+        isOpen={diaryModal.isOpen}
+        onClose={() => setDiaryModal({ isOpen: false })}
+        catId={cat.id}
       />
     </div>
   );

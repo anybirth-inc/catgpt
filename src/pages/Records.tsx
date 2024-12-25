@@ -41,24 +41,28 @@ export function Records() {
   };
 
   return (
-    <div className="pb-20">
+    <div className="pb-20 px-4">
       <h1 className="text-2xl font-bold mb-6">記録</h1>
 
-      <CatSelector
-        cats={mockCats}
-        selectedCats={selectedCats}
-        onCatSelect={handleCatSelect}
-      />
+      <div className="space-y-4 mb-6">
+        <CatSelector
+          cats={mockCats}
+          selectedCats={selectedCats}
+          onCatSelect={handleCatSelect}
+        />
 
-      <DateRangeSelector
-        range={dateRange}
-        onRangeChange={setDateRange}
-        startDate={startDate}
-        endDate={endDate}
-        onDateChange={handleDateChange}
-      />
+        <div className="bg-white rounded-lg shadow-md p-4">
+          <DateRangeSelector
+            range={dateRange}
+            onRangeChange={setDateRange}
+            startDate={startDate}
+            endDate={endDate}
+            onDateChange={handleDateChange}
+          />
+        </div>
+      </div>
 
-      <div className="bg-white rounded-lg shadow-md p-6">
+      <div className="bg-white rounded-lg shadow-md p-4 lg:p-6">
         <RecordTabs tabs={tabs}>
           <WeightChart
             selectedCats={selectedCats}
