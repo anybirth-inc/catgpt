@@ -1,8 +1,6 @@
 import React from 'react';
-import { Activity, Scale } from 'lucide-react';
+import { Activity, AlertTriangle, Scale, Droplets } from 'lucide-react';
 import { RecordType } from '../../types';
-import { useRecords } from '../../hooks/useRecords';
-import { formatRecord } from '../../utils/formatRecord';
 
 interface CatQuickActionsProps {
   catId: string;
@@ -10,56 +8,57 @@ interface CatQuickActionsProps {
 }
 
 export function CatQuickActions({ catId, onRecordClick }: CatQuickActionsProps) {
-  const { getLatestRecord, loading } = useRecords(catId);
-
-  const actions = [
-    {
-      icon: Scale,
-      title: '体重を記録',
-      type: 'weight' as RecordType,
-      getLastRecord: () => formatRecord(getLatestRecord('weight'))
-    },
-    {
-      icon: Activity,
-      title: '活動量を記録',
-      type: 'activity' as RecordType,
-      getLastRecord: () => formatRecord(getLatestRecord('activity'))
-    }
-  ];
-
-  if (loading) {
-    return (
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-        {[1, 2].map((i) => (
-          <div key={i} className="p-4 bg-white rounded-lg shadow-md animate-pulse">
-            <div className="flex items-center space-x-3">
-              <div className="w-6 h-6 bg-gray-200 rounded-full"></div>
-              <div className="flex-1">
-                <div className="h-4 bg-gray-200 rounded w-24"></div>
-                <div className="h-3 bg-gray-200 rounded w-32 mt-2"></div>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    );
-  }
-
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-      {actions.map((action) => (
-        <button
-          key={action.type}
-          onClick={() => onRecordClick(action.type, action.title)}
-          className="p-4 bg-white rounded-lg shadow-md flex items-center space-x-3 hover:bg-gray-50 transition-colors"
-        >
-          <action.icon className="w-6 h-6 text-indigo-600" />
-          <div className="flex-1 text-left">
-            <h3 className="font-medium">{action.title}</h3>
-            <p className="text-sm text-gray-600">最新: {action.getLastRecord()}</p>
-          </div>
-        </button>
-      ))}
+    <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 p-4">
+      {/* 健康な猫 */}
+      <div className="bg-white rounded-lg shadow-md p-4 flex items-center space-x-4">
+        <div className="flex-shrink-0">
+          <Activity className="w-8 h-8 text-green-500" />
+        </div>
+        <div>
+          <p className="text-sm text-gray-600">健康な猫</p>
+          <p className="text-2xl font-bold">1</p>
+        </div>
+      </div>
+
+      {/* 注意が必要な猫 */}
+      <div className="bg-white rounded-lg shadow-md p-4 flex items-center space-x-4">
+        <div className="flex-shrink-0">
+          <AlertTriangle className="w-8 h-8 text-yellow-500" />
+        </div>
+        <div>
+          <p className="text-sm text-gray-600">注意が必要な猫</p>
+          <p className="text-2xl font-bold">1</p>
+        </div>
+      </div>
+
+      {/* 未記録の体重測定 */}
+      <div 
+        className="bg-white rounded-lg shadow-md p-4 flex items-center space-x-4 cursor-pointer hover:bg-gray-50"
+        onClick={() => onRecordClick('weight', '体重を記録')}
+      >
+        <div className="flex-shrink-0">
+          <Scale className="w-8 h-8 text-blue-500" />
+        </div>
+        <div>
+          <p className="text-sm text-gray-600">未記録の体重測定</p>
+          <p className="text-2xl font-bold">3</p>
+        </div>
+      </div>
+
+      {/* 今日の飲水量 */}
+      <div 
+        className="bg-white rounded-lg shadow-md p-4 flex items-center space-x-4 cursor-pointer hover:bg-gray-50"
+        onClick={() => onRecordClick('water', '飲水量を記録')}
+      >
+        <div className="flex-shrink-0">
+          <Droplets className="w-8 h-8 text-cyan-500" />
+        </div>
+        <div>
+          <p className="text-sm text-gray-600">今日の飲水量</p>
+          <p className="text-2xl font-bold">未記録</p>
+        </div>
+      </div>
     </div>
   );
 }
